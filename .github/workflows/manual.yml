@@ -89,7 +89,7 @@ jobs:
       - name: Tag Docker image
         id: tag_step
         run: |
-          IMAGE_NAME=your-dockerhub-username/static-site
+          IMAGE_NAME=supremeabuzar/static-site
           GIT_SHA=${{ needs.build.outputs.short_sha }}
           docker tag static-site:build $IMAGE_NAME:latest
           docker tag static-site:build $IMAGE_NAME:$GIT_SHA
@@ -135,5 +135,5 @@ jobs:
 
       - name: Push Docker images
         run: |
-          docker push your-dockerhub-username/static-site:latest
-          docker push your-dockerhub-username/static-site:${{ needs.build.outputs.short_sha }}
+          docker push supremeabuzar/static-site:latest
+          docker push supremeabuzar/static-site:${{ needs.build.outputs.short_sha }}
