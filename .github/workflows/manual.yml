@@ -3,7 +3,7 @@ name: Static Website CI/CD
 on:
   push:
     branches:
-      - master
+      - master  # ✅ Trigger only on master branch
 
 jobs:
   build:
@@ -12,13 +12,16 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Install Dependencies (if any)
-        run: echo "No dependencies for static site"
-
-      - name: Build Site
+      - name: Build Static Website
         run: |
           mkdir -p dist
           echo "<h1>My Static Site</h1>" > dist/index.html
+
+      - name: Upload dist as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
 
   test:
     runs-on: ubuntu-latest
@@ -26,6 +29,12 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
 
       - name: Run Tests
         run: |
@@ -37,6 +46,12 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
 
       - name: Build Docker Image
         run: docker build -t static-site:latest .
@@ -55,5 +70,5 @@ jobs:
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Push Image
+      - name: Push Image to Docker Hub
         run: docker push your-dockerhub-username/static-site:latest
